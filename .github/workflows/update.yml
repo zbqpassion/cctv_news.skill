@@ -8,8 +8,8 @@ on:
         required: false
         type: string
   schedule:
-    # 北京时间每天晚上 9 点执行，获取当天的数据
-    - cron: '0 13 * * *'
+    # 北京时间每天晚上 9:10 执行，获取当天的数据；避开 GitHub Actions 整点高峰
+    - cron: '10 13 * * *'
 
 permissions:
   contents: write
