@@ -11,6 +11,9 @@ on:
     # 北京时间每天晚上 9 点执行，获取当天的数据
     - cron: '0 13 * * *'
 
+permissions:
+  contents: write
+
 jobs:
   update:
     name: Daily Sync
