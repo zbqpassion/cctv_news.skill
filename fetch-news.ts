@@ -13,9 +13,6 @@ const cnToday = new Date(
     today.getUTCSeconds(),
   ),
 );
-const yesterday = new Date(
-  Date.UTC(cnToday.getUTCFullYear(), cnToday.getUTCMonth(), cnToday.getUTCDate() - 1, 0, 0, 0),
-);
 
-// 获取昨天的数据
-fetchNews(yesterday);
+// 获取当天的数据
+fetchNews(cnToday);
