@@ -2,6 +2,11 @@ name: Daily update
 
 on:
   workflow_dispatch:
+    inputs:
+      date:
+        description: '要补抓的日期，格式 YYYYMMDD；留空则抓当天'
+        required: false
+        type: string
   schedule:
     # 北京时间每天晚上 9 点执行，获取当天的数据
     - cron: '0 13 * * *'
@@ -23,9 +28,15 @@ jobs:
           git config --local user.email "github-actions[bot]@github.com"
           git config --local user.name "github-actions[bot]"
       - name: Build
+        env:
+          FETCH_DATE: ${{ github.event.inputs.date || '' }}
         run: |
           bun install
-          bun run fetch
+          if [ -n "$FETCH_DATE" ]; then
+            bun run fetch -- "$FETCH_DATE"
+          else
+            bun run fetch
+          fi
           bun run make-index
       - name: Commit changes
         run: |
