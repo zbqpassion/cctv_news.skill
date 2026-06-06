@@ -41,7 +41,7 @@ function mkDummyHeaders(referer: string): Record<string, string> {
   };
 }
 
-export async function getWeb(url: string) {
+export async function getWeb(url: string): Promise<string> {
   // 尝试读取已经存在的文件
   const html = await loadDumpedFile(url);
   if (html) {
@@ -58,15 +58,21 @@ export async function getWeb(url: string) {
         signal: abort.signal,
         headers: mkDummyHeaders(url),
       });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} ${res.statusText}`);
+      }
+
       const content = await res.text();
-      dumpHtml(url, content);
+      await dumpHtml(url, content);
 
       return content;
     } catch (err) {
       console.error(`getWeb failed, ${err}`);
-      await new Promise((resolve) => setTimeout(resolve, 10000)); // 等待一分
+      await new Promise((resolve) => setTimeout(resolve, 10000)); // 等待 10 秒后重试
     } finally {
       clearTimeout(timeoutHandle);
     }
   }
+
+  throw new Error(`getWeb failed after ${MAX_TRY} attempts: ${url}`);
 }

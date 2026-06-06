@@ -21,7 +21,7 @@ function chunk<T>(store: T[], size: number) {
 }
 
 const groupedByMonth = mdList
-  .filter((name) => name !== 'catalogue.json')
+  .filter((name) => /^\d{8}\.md$/.test(name))
   .map((name) => name.replaceAll(/\.md$/g, ''))
   .reduce(
     (g, it) => {
@@ -50,7 +50,7 @@ for (const [label, newsList] of mapGroupedByYearMonth) {
   // 每月的列表
   const sortedNewsList: Array<string | null> = newsList.toSorted((a, b) => Number.parseInt(a) - Number.parseInt(b));
 
-  // 在开关补充一些 null，对齐日期、星期
+  // 在开头和结尾补充空单元格，对齐周一到周日的日历表格。
   {
     const fst = sortedNewsList[0] || '';
 
@@ -62,9 +62,14 @@ for (const [label, newsList] of mapGroupedByYearMonth) {
       0,
       0,
     ).getDay();
+    const leadingBlankCount = (firstDay + 6) % 7;
 
-    for (let i = 0; i < firstDay - 1; i++) {
+    for (let i = 0; i < leadingBlankCount; i++) {
       sortedNewsList.unshift(null);
+    }
+
+    while (sortedNewsList.length % 7 !== 0) {
+      sortedNewsList.push(null);
     }
   }
 
