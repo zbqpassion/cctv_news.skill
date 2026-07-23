@@ -1,0 +1,15 @@
+[Unit]
+Description=Fetch and publish the latest CCTV News transcript
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/cctv-news-sync
+Environment=TZ=Asia/Shanghai
+Environment=CCTV_NEWS_REPO_DIR=/opt/cctv-news-sync
+Environment=CCTV_NEWS_BUN_BIN=/root/.bun/bin/bun
+ExecStart=/opt/cctv-news-sync/deploy/cctv-news-update.sh
+TimeoutStartSec=20min
+UMask=0027

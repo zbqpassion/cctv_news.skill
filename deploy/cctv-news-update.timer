@@ -1,0 +1,13 @@
+[Unit]
+Description=Retry CCTV News updates every 10 minutes in the evening
+
+[Timer]
+OnCalendar=*-*-* 21..23:15/10:00 Asia/Shanghai
+OnCalendar=*-*-* 00:10:00 Asia/Shanghai
+Persistent=true
+AccuracySec=1s
+RandomizedDelaySec=0
+Unit=cctv-news-update.service
+
+[Install]
+WantedBy=timers.target

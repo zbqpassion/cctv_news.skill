@@ -8,12 +8,9 @@ on:
         required: false
         type: string
   schedule:
-    # 北京时间 21:17、21:47、22:17、22:47、23:17 多次尝试，降低 GitHub runner 故障影响
-    - cron: '17 13 * * *'
-    - cron: '47 13 * * *'
-    - cron: '17 14 * * *'
-    - cron: '47 14 * * *'
-    - cron: '17 15 * * *'
+    # 服务器定时器为主；北京时间 23:50 和次日 00:30 由 GitHub Actions 兜底。
+    - cron: '50 15 * * *'
+    - cron: '30 16 * * *'
 
 concurrency:
   group: daily-update-${{ github.ref }}
