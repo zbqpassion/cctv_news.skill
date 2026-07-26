@@ -6,6 +6,7 @@ umask 027
 REPO_DIR="${CCTV_NEWS_REPO_DIR:-/opt/cctv-news-sync}"
 BUN_BIN="${CCTV_NEWS_BUN_BIN:-/root/.bun/bin/bun}"
 LOCK_FILE="${CCTV_NEWS_LOCK_FILE:-/run/lock/cctv-news-update.lock}"
+export PATH="$(dirname "$BUN_BIN"):$PATH"
 
 log() {
   printf '%s %s\n' "$(date --iso-8601=seconds)" "$*"
@@ -73,7 +74,7 @@ fi
 
 "$BUN_BIN" install --frozen-lockfile
 
-if ! "$BUN_BIN" run fetch -- "$target_date"; then
+if ! "$BUN_BIN" fetch-news.ts "$target_date"; then
   discard_partial_fetch
   log "Fetch failed for ${target_date}; a later timer run will retry."
   exit 1
@@ -89,7 +90,7 @@ if ((file_size < 1000)) ||
   exit 1
 fi
 
-if ! "$BUN_BIN" run make-index; then
+if ! "$BUN_BIN" make-index.ts; then
   discard_partial_fetch
   log "Index generation failed for ${target_date}."
   exit 1
